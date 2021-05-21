@@ -284,7 +284,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 
 		for (String basePackage : basePackages) {
-			//晚上了扫描  class文件----有选择性bd
+			//完成了扫描，将class文件变成BeanDefinition，有选择性(Component注解、ManagedBean注解、Named注解)的扫描
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 
 

@@ -122,11 +122,17 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 获的这个类的 @Configuration 注解信息
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
+			// @Configuration 注解的默认值。标识这个BeanDefinition 对应的类是全注解
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || isConfigurationCandidate(metadata)) {
+			/*
+			 没有 @Configuration 注解或者有 @Component、@ComponentScan、@Import、@ImportResource 这四个注解的任意一个
+			 标识这个BeanDefinition 对应的类是半注解
+			 */
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {

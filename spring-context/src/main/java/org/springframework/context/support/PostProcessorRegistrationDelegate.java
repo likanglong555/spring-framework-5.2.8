@@ -135,14 +135,14 @@ final class PostProcessorRegistrationDelegate {
 			 *实例化之前首先spring得知道整个容器当中有哪些BeanDefinitionRegistryPostProcessor
 			 * 容器里面有几个BeanDefinitionRegistryPostProcessor
 			 *  执行内部的BeanDefinitionRegistryPostProcessor
-			 *  ConfigrationClassPostPorcessor#postProcessBeanDefinitionRegistry  扫描
+			 *  ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry  扫描
 			 *  实例化这个类
 			 */
 			//首先从容器（单例池或者bdmap）当中找到所有实现了 BeanDefinitionRegistryPostProcessor接口得类得名字
 			//从这里可知由于整个spring容器还在启动得过程中，所以这里能找到得就是spring内置得一些BeanDefinitionRegistryPostProcessor
 			//正常情况下 执行玩这里 这个 postProcessorNames得长度=1
 			//因为这里可以找到一个 属于BeanDefinitionRegistryPostProcessor类型的bd
-			//spring在启动的时候自己往bdMap当中添加的那个 ConfigrationClassPostPorcessor
+			//spring在启动的时候自己往bdMap当中添加的那个 ConfigurationClassPostProcessor
 			// First, invoke the BeanDefinitionRegistryPostProcessors .
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -165,7 +165,7 @@ final class PostProcessorRegistrationDelegate {
 			//添加到 registryProcessors 方便执行父类得回调
 			registryProcessors.addAll(currentRegistryProcessors);
 			//因为这个currentRegistryProcessors当中正常情况里面只有一个bean ConfigrationClassPostPorcessor
-			//所以这个方法的意义就是执行 ConfigrationClassPostPorcessor#postProcessBeanDefinitionRegistry
+			//所以这个方法的意义就是执行 ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry
 			//这个方法做了很多事情
 			//1、完成了扫描
 			//完成了扫描  postProcessor.postProcessBeanDefinitionRegistry 注册bd

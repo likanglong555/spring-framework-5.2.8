@@ -208,6 +208,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 		try {
 			//为什么不直接写成ManagedBean.class？编译通过
+			// ManagedBean 不是spring的，直接写ManagedBean.class 编译失败。下同
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("javax.annotation.ManagedBean", cl)), false));
 			logger.trace("JSR-250 'javax.annotation.ManagedBean' found and supported for component scanning");
@@ -311,7 +312,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 
-		//提高扫描效率
+		// 使用索引提高扫描效率
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
@@ -425,7 +426,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
 			//得到下面所以的文件  resources ==file
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
-			Class clazz =null;
+//			Class clazz =null;
 
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
@@ -443,6 +444,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 						//1、是否被剔除  扫描器没有添加 excludeFilters 所以这里不会剔除
 						//2、是否现需要转换 扫描器添加includeFilters  3个规则
 
+						//类上面是加了Component注解、ManagedBean 注解、Named 注解会封装成db
 						//在mybatis扩展spring的情况由于添加不对任何规则做过滤过滤器
 						//所以这个if永远返回true  所有类都能所谓mapper
 						if (isCandidateComponent(metadataReader)) {
@@ -507,11 +509,13 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
+		// 排除某些类。一般情况下这个for不会进
 		for (TypeFilter tf : this.excludeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return false;
 			}
 		}
+		// 包含某些类
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);
